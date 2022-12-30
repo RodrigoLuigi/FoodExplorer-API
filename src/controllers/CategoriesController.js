@@ -49,7 +49,31 @@ class CategoriesController {
     try {
       const products = await knex('products').where({category_id: categoryId});
 
-      return response.json(products);
+      const productIngredients = await knex('product_ingredient')
+      .select([
+        'ingredients.id',
+        'ingredients.name',
+        'ingredients.imagePath',
+        'product_ingredient.product_id',
+      ])
+      .innerJoin(
+        'ingredients',
+        'ingredients.id',
+        'product_ingredient.ingredient_id'
+      );
+
+    const productWithIngredients = products.map((product) => {
+      const ingredientsProduct = productIngredients.filter(
+        (ingredient) => ingredient.product_id === product.id
+      );
+
+      return {
+        ...product,
+        ingredients: ingredientsProduct,
+      };
+    });
+
+      return response.json(productWithIngredients);
     } catch (error) {
       console.log(error);
 
