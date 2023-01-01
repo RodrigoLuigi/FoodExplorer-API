@@ -35,7 +35,6 @@ class ProductsController {
         };
       });
 
-      console.log(ingredientsInsert);
       // ajustar semântica product_ingredient's'
       await knex('product_ingredient').insert(ingredientsInsert);
 
