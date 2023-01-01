@@ -178,6 +178,20 @@ class ProductsController {
 
     return response.json(productsWithIngredients);
   }*/
+
+  async delete(request, response) {
+    const { id } = request.params;
+
+    try {
+      await knex('products').where({ id }).delete();
+
+      return response.status(200).json();
+    } catch (error) {
+      console.log(error);
+
+      return response.sendStatus(500);
+    }
+  }
 }
 
 module.exports = ProductsController;
