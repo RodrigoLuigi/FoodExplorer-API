@@ -1,10 +1,13 @@
 const knex = require('../database/knex');
 const AppError = require('../utils/AppError');
+const DiskStorage = require('../providers/DiskStorage');
 
 class IngredientsController {
   async create(request, response) {
-    /* const imagePath = request.query; */
     const { name } = request.body;
+    const imagePath = request.file?.filename;
+
+    const diskStorage = new DiskStorage();
 
     if (!name) {
       throw new AppError(
@@ -12,7 +15,9 @@ class IngredientsController {
       );
     }
 
-    const checkIngredientExists = await knex('ingredients').where({ name }).first();
+    const checkIngredientExists = await knex('ingredients')
+      .where({ name })
+      .first();
 
     if (checkIngredientExists) {
       throw new AppError(
@@ -20,18 +25,34 @@ class IngredientsController {
       );
     }
 
-    try {
-      await knex('ingredients').insert({
-        name,
-        /* imagePath */
-      });
+    const filename = await diskStorage.saveFile(imagePath);
 
-      return response.status(201).json({ name });
-    } catch (error) {
-      console.log(error);
+    await knex('ingredients').insert({
+      name,
+      imagePath: filename,
+    });
 
-      return response.sendStatus(500);
+    return response.status(201).json({ name, imagePath });
+  }
+
+  async delete(request, response) {
+    const { id } = request.params;
+
+    const diskStorage = new DiskStorage();
+
+    const ingredient = await knex('ingredients').where({ id }).first();
+
+    if (!ingredient) {
+      throw new AppError(`O ingrediente com id ${id} não existe`);
     }
+
+    if (ingredient.imagePath) {
+      await diskStorage.deleteFile(ingredient.imagePath);
+    }
+
+    await knex('ingredients').where({ id }).delete();
+
+    return response.status(200).json();
   }
 }
 
