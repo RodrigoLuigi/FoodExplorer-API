@@ -19,83 +19,60 @@ class CategoriesController {
       );
     }
 
-    try {
-      await knex('category').insert({
-        name,
-        icon,
-      });
+    await knex('category').insert({
+      name,
+      icon,
+    });
 
-      return response.status(201).json({ name, icon });
-    } catch (error) {
-      console.log(error);
-
-      return response.sendStatus(500);
-    }
+    return response.status(201).json({ name, icon });
   }
 
   async index(request, response) {
-    try {
-      const categories = await knex('category');
+    const categories = await knex('category');
 
-      return response.status(200).json(categories);
-    } catch (error) {
-      console.log(error);
-
-      return response.sendStatus(500);
-    }
+    return response.status(200).json(categories);
   }
 
   async delete(request, response) {
     const { id } = request.params;
 
-    try {
-      await knex('category').where({ id }).delete();
+    await knex('category').where({ id }).delete();
 
-      return response.status(200).json();
-    } catch (error) {
-      console.log(error);
-
-      return response.sendStatus(500);
-    }
+    return response.status(200).json();
   }
 
   async indexByCategory(request, response) {
     const { categoryId } = request.params;
-    try {
-      const products = await knex('products').where({
-        category_id: categoryId,
-      });
 
-      const productIngredients = await knex('product_ingredient')
-        .select([
-          'ingredients.id',
-          'ingredients.name',
-          'ingredients.imagePath',
-          'product_ingredient.product_id',
-        ])
-        .innerJoin(
-          'ingredients',
-          'ingredients.id',
-          'product_ingredient.ingredient_id'
-        );
+    const products = await knex('products').where({
+      category_id: categoryId,
+    });
 
-      const productWithIngredients = products.map((product) => {
-        const ingredientsProduct = productIngredients.filter(
-          (ingredient) => ingredient.product_id === product.id
-        );
+    const productIngredients = await knex('product_ingredient')
+      .select([
+        'ingredients.id',
+        'ingredients.name',
+        'ingredients.imagePath',
+        'product_ingredient.product_id',
+      ])
+      .innerJoin(
+        'ingredients',
+        'ingredients.id',
+        'product_ingredient.ingredient_id'
+      );
 
-        return {
-          ...product,
-          ingredients: ingredientsProduct,
-        };
-      });
+    const productWithIngredients = products.map((product) => {
+      const ingredientsProduct = productIngredients.filter(
+        (ingredient) => ingredient.product_id === product.id
+      );
 
-      return response.status(200).json(productWithIngredients);
-    } catch (error) {
-      console.log(error);
+      return {
+        ...product,
+        ingredients: ingredientsProduct,
+      };
+    });
 
-      return response.sendStatus(500);
-    }
+    return response.status(200).json(productWithIngredients);
   }
 }
 

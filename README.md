@@ -17,3 +17,15 @@ npx knex migrate:make "nome da migrate"
 npm install express-async-errors --save
 
 npm install multer
+
+**LISTA DE TAREFAS**
+
+* UsersController / users.routes
+* OrdersController / orders.routes
+* Middleware de autenticação
+
+
+
+
+
+

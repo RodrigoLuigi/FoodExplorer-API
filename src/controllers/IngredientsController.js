@@ -54,6 +54,41 @@ class IngredientsController {
 
     return response.status(200).json();
   }
+
+  async index(request, response) {
+    const ingredients = await knex('ingredients');
+
+    return response.status(200).json(ingredients);
+  }
+
+  async update(request, response) {
+    const { id } = request.params;
+    const { name } = request.body;
+
+    const ingredient = await knex('ingredients').where({ id }).first();
+
+    if (!ingredient) {
+      throw new AppError('Ingrediente não encontrado.');
+    }
+
+    const ingredientName = await knex('ingredients').where({ name }).first();
+
+    if (ingredientName && ingredientName.id !== ingredient.id) {
+      throw new AppError('Já existe um ingrediente com este nome.');
+    }
+
+    if (!name.trim()) {
+      throw new AppError(
+        'Você deixou o campo NOME vazio. Digite um novo NOME para o ingrediente.'
+      );
+    }
+
+    ingredient.name = name ?? ingredient.name;
+
+    await knex('ingredients').update(ingredient).where({ id });
+
+    return response.json(ingredient);
+  }
 }
 
 module.exports = IngredientsController;

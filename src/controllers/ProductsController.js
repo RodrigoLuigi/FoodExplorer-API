@@ -63,6 +63,7 @@ class ProductsController {
       .select([
         'ingredients.id',
         'ingredients.name',
+        'ingredients.imagePath',
         'product_ingredient.product_id',
       ])
       .where('product_ingredient.product_id', id)
@@ -157,6 +158,50 @@ class ProductsController {
     await knex('products').where({ id }).delete();
 
     return response.status(200).json();
+  }
+
+  async update(request, response) {
+    const { name, description, price, category_id, ingredients } = request.body;
+    const { id } = request.params;
+
+    const product = await knex('products').where({ id }).first();
+
+    if (!product) {
+      throw new AppError('Produto não encontrado.');
+    }
+
+    if (name) {
+      const productWithUpdateName = await knex('products')
+        .where({ name })
+        .first();
+
+      if (productWithUpdateName && productWithUpdateName.id !== product.id) {
+        throw new AppError('Já existe um produto com este nome.');
+      }
+    }
+
+    product.name = name ?? product.name;
+    product.description = description ?? product.description;
+    product.price = price ?? product.price;
+    product.category_id = category_id ?? product.category_id;
+
+    await knex('products').update(product).where({ id: product.id });
+
+    const ingredientsWithUpdate = ingredients.map((ingredient_id) => {
+      return {
+        ingredient_id,
+        product_id: product.id,
+      };
+    });
+
+    await knex('product_ingredient').where({ product_id: product.id }).delete();
+
+    // ajustar semântica product_ingredients'
+    await knex('product_ingredient')
+      .insert(ingredientsWithUpdate)
+      .where({ product_id: id });
+
+    return response.json({ ...product, ingredientsWithUpdate });
   }
 }
 
