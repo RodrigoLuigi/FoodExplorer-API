@@ -18,6 +18,8 @@ npm install express-async-errors --save
 
 npm install multer
 
+npm install bcryptjs
+
 **LISTA DE TAREFAS**
 
 * UsersController / users.routes
