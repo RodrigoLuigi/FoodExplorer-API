@@ -22,8 +22,7 @@ npm install bcryptjs
 
 **LISTA DE TAREFAS**
 
-* UsersController / users.routes
-* OrdersController / orders.routes
+* OrdersController / orders.routes -> organizar ideias, fazer tratamentos e refatorar
 * Middleware de autenticação
 
 
