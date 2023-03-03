@@ -6,6 +6,8 @@ const productsRoutes = require('./products.routes');
 const ingredientsRoutes = require('./ingredients.routes');
 const ordersRoutes = require('./orders.routes');
 const sessionsRoutes = require('./sessions.routes');
+const permissionsRoutes = require('./permissions.routes');
+const rolesRoutes = require('./roles.routes');
 
 const routes = Router();
 
@@ -15,5 +17,7 @@ routes.use('/categories', categoriesRoutes);
 routes.use('/products', productsRoutes);
 routes.use('/ingredients', ingredientsRoutes);
 routes.use('/orders', ordersRoutes);
+routes.use('/permissions', permissionsRoutes);
+routes.use('/roles', rolesRoutes);
 
 module.exports = routes;
