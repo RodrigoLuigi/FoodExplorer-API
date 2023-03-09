@@ -1,26 +1,24 @@
 const knex = require('../database/knex');
 const AppError = require('../utils/AppError');
 
+const PermissionRepository = require('../repositories/PermissionRepository');
+const PermissionCreateService = require('../services/permissions/PermissionCreateService');
+
 class PermissionsController {
   async create(request, response) {
     const { name, description } = request.body;
 
-    const existPermission = await knex('permissions').where({ name }).first();
+    const permissionRepository = new PermissionRepository();
+    const permissionCreateService = new PermissionCreateService(
+      permissionRepository
+    );
 
-    if (existPermission) {
-      throw new AppError('Permission already exists!');
-    }
-
-    const permission_id = await knex('permissions').insert({
+    const createdPermission = await permissionCreateService.execute({
       name,
       description,
     });
 
-    const permission = await knex('permissions')
-      .where({ id: permission_id })
-      .first();
-
-    return response.json(permission);
+    return response.status(201).json(createdPermission);
   }
 }
 

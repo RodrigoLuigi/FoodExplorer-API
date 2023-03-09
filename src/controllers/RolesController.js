@@ -1,46 +1,37 @@
-const knex = require('../database/knex');
-const AppError = require('../utils/AppError');
+const PermissionRepository = require('../repositories/PermissionRepository');
+
+const RoleRepository = require('../repositories/RoleRepository');
+const RoleCreateService = require('../services/roles/RoleCreateService');
+
+const RolePermissionsRepository = require('../repositories/RolePermissionsRepository');
+const RolePermissionsCreateService = require('../services/role_permissions/RolePermissionsCreateService');
 
 class RolesController {
   async create(request, response) {
     const { name, description, permissions } = request.body;
 
-    const existRole = await knex('roles').where({ name }).first();
+    const permissionRepository = new PermissionRepository();
 
-    if (existRole) {
-      throw new AppError('Roles already exists!');
-    }
-
-    if (!permissions || permissions.length === 0) {
-      throw new AppError('As permissões não foram adicionadas.');
-    }
-
-    const existsPermissions = await knex('permissions').whereIn(
-      'id',
-      permissions
+    const roleRepository = new RoleRepository();
+    const roleCreateService = new RoleCreateService(
+      roleRepository,
+      permissionRepository
     );
 
-    const permissionsIds = existsPermissions.map((permission) => {
-      return permission.id;
-    });
-
-    const checkPermissions = permissions.every((p) =>
-      permissionsIds.includes(p)
+    const rolePermissionsRepository = new RolePermissionsRepository();
+    const rolePermissionsCreateService = new RolePermissionsCreateService(
+      rolePermissionsRepository
     );
 
-    if (!checkPermissions) {
-      throw new AppError('Permissões incorretas!');
-    }
-
-    const role_id = await knex('roles').insert({ name, description });
-
-    const permissionsInsert = permissions.map((permission_id) => {
-      return { permission_id, role_id };
+    const role = await roleCreateService.execute({
+      name,
+      description,
+      permissions,
     });
 
-    await knex('permissions_roles').insert(permissionsInsert);
+    await rolePermissionsCreateService.execute(role.id, permissions);
 
-    return response.status(201).json({ name, description, existsPermissions });
+    return response.status(201).json(role);
   }
 }
 
