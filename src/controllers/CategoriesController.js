@@ -1,34 +1,29 @@
 const knex = require('../database/knex');
-const AppError = require('../utils/AppError');
+const CategoriesRepository = require('../repositories/CategoriesRepository');
+const CategoryCreateService = require('../services/categories/CategoryCreateService');
+const CategoryDeleteService = require('../services/categories/CategoryDeleteService');
+const CategoryIndexService = require('../services/categories/CategoryIndexService');
+/* const AppError = require('../utils/AppError'); */
 
 class CategoriesController {
   async create(request, response) {
     const { name, icon } = request.body;
 
-    if (!name || !icon) {
-      throw new AppError(
-        'Você deixou um campo vazio. Preencha todos os campos necessário para cadastrar uma nova categoria!'
-      );
-    }
+    const categoriesRepository = new CategoriesRepository();
+    const categoryCreateService = new CategoryCreateService(
+      categoriesRepository
+    );
 
-    const checkCategoryExists = await knex('category').where({ name }).first();
+    const category = await categoryCreateService.execute({ name, icon });
 
-    if (checkCategoryExists) {
-      throw new AppError(
-        'Esta categoria já existe. Escolha outro nome para a categoria que deseja cadastrar.'
-      );
-    }
-
-    await knex('category').insert({
-      name,
-      icon,
-    });
-
-    return response.status(201).json({ name, icon });
+    return response.status(201).json(category);
   }
 
   async index(request, response) {
-    const categories = await knex('category');
+    const categoriesRepository = new CategoriesRepository();
+    const categoryIndexService = new CategoryIndexService(categoriesRepository);
+
+    const categories = await categoryIndexService.execute();
 
     return response.status(200).json(categories);
   }
@@ -36,7 +31,12 @@ class CategoriesController {
   async delete(request, response) {
     const { id } = request.params;
 
-    await knex('category').where({ id }).delete();
+    const categoriesRepository = new CategoriesRepository();
+    const categoryDeleteService = new CategoryDeleteService(
+      categoriesRepository
+    );
+
+    await categoryDeleteService.execute(id);
 
     return response.status(200).json();
   }
