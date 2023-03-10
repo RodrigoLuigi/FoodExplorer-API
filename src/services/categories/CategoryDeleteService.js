@@ -6,9 +6,6 @@ class CategoryDeleteService {
   }
 
   async execute(id) {
-    if (!id) {
-      throw new AppError('A categoria na qual deseja deletar não existe.');
-    }
     await this.categoriesRepository.delete(id);
   }
 }
