@@ -29,6 +29,20 @@ class DiskStorage {
     //deleta o arquivo
     await fs.promises.unlink(filePath);
   }
+
+  async deleteTmpFile(file) {
+    const filePath = path.resolve(uploadConfig.TMP_FOLDER, file);
+
+    try {
+      //pega o estado do arquivo
+      await fs.promises.stat(filePath);
+    } catch {
+      return;
+    }
+
+    //deleta o arquivo
+    await fs.promises.unlink(filePath);
+  }
 }
 
 module.exports = DiskStorage;

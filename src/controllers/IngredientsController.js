@@ -1,62 +1,48 @@
 const knex = require('../database/knex');
 const AppError = require('../utils/AppError');
-const DiskStorage = require('../providers/DiskStorage');
+
+const IngredientsRepository = require('../repositories/IngredientsRepository');
+
+const IngredientIndexService = require('../services/ingredients/IngredientIndexService');
+const IngredientCreateService = require('../services/ingredients/IngredientCreateService');
+const IngredientDeleteService = require('../services/ingredients/IngredientDeleteService');
+const IngredientUpdateService = require('../services/ingredients/IngredientUpdateService');
 
 class IngredientsController {
   async create(request, response) {
     const { name } = request.body;
     const imagePath = request.file?.filename;
 
-    const diskStorage = new DiskStorage();
+    const ingredientsRepository = new IngredientsRepository();
+    const ingredientCreateService = new IngredientCreateService(
+      ingredientsRepository
+    );
 
-    if (!name) {
-      throw new AppError(
-        'Você deixou um campo vazio. Preencha todos os campos necessário para cadastrar um novo ingrediente!'
-      );
-    }
+    const ingredient = await ingredientCreateService.execute(name, imagePath);
 
-    const checkIngredientExists = await knex('ingredients')
-      .where({ name })
-      .first();
-
-    if (checkIngredientExists) {
-      throw new AppError(
-        'Este ingrediente já existe. Escolha outro nome para o ingrediente que deseja cadastrar.'
-      );
-    }
-
-    const filename = await diskStorage.saveFile(imagePath);
-
-    await knex('ingredients').insert({
-      name,
-      imagePath: filename,
-    });
-
-    return response.status(201).json({ name, imagePath });
+    return response.status(201).json(ingredient);
   }
 
   async delete(request, response) {
     const { id } = request.params;
 
-    const diskStorage = new DiskStorage();
+    const ingredientsRepository = new IngredientsRepository();
+    const ingredientDeleteService = new IngredientDeleteService(
+      ingredientsRepository
+    );
 
-    const ingredient = await knex('ingredients').where({ id }).first();
+    const ingredientDeleted = await ingredientDeleteService.execute(id);
 
-    if (!ingredient) {
-      throw new AppError(`O ingrediente com id ${id} não existe`);
-    }
-
-    if (ingredient.imagePath) {
-      await diskStorage.deleteFile(ingredient.imagePath);
-    }
-
-    await knex('ingredients').where({ id }).delete();
-
-    return response.status(200).json();
+    return response.status(200).json(ingredientDeleted);
   }
 
   async index(request, response) {
-    const ingredients = await knex('ingredients');
+    const ingredientsRepository = new IngredientsRepository();
+    const ingredientIndexService = new IngredientIndexService(
+      ingredientsRepository
+    );
+
+    const ingredients = await ingredientIndexService.execute();
 
     return response.status(200).json(ingredients);
   }
@@ -65,27 +51,12 @@ class IngredientsController {
     const { id } = request.params;
     const { name } = request.body;
 
-    const ingredient = await knex('ingredients').where({ id }).first();
+    const ingredientsRepository = new IngredientsRepository();
+    const ingredientUpdateService = new IngredientUpdateService(
+      ingredientsRepository
+    );
 
-    if (!ingredient) {
-      throw new AppError('Ingrediente não encontrado.');
-    }
-
-    const ingredientName = await knex('ingredients').where({ name }).first();
-
-    if (ingredientName && ingredientName.id !== ingredient.id) {
-      throw new AppError('Já existe um ingrediente com este nome.');
-    }
-
-    if (!name.trim()) {
-      throw new AppError(
-        'Você deixou o campo NOME vazio. Digite um novo NOME para o ingrediente.'
-      );
-    }
-
-    ingredient.name = name ?? ingredient.name;
-
-    await knex('ingredients').update(ingredient).where({ id });
+    const ingredient = await ingredientUpdateService.execute(id, name);
 
     return response.json(ingredient);
   }
