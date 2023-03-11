@@ -1,3 +1,5 @@
+const AppError = require('../../utils/AppError');
+
 class IngredientUpdateService {
   constructor(ingredientsRepository) {
     this.ingredientsRepository = ingredientsRepository;
