@@ -1,4 +1,3 @@
-const DiskStorage = require('../../providers/DiskStorage');
 const AppError = require('../../utils/AppError');
 
 class IngredientCreateService {
@@ -6,12 +5,10 @@ class IngredientCreateService {
     this.ingredientsRepository = ingredientsRepository;
   }
 
-  async execute(name, imagePath) {
-    const diskStorage = new DiskStorage();
-
+  async execute(name) {
     if (!name) {
-      throw new AppErrorr(
-        'Você deixou um campo vazio. Preencha todos os campos necessário para cadastrar um novo ingrediente!'
+      throw new AppError(
+        'Você deixou um campo vazio. Preencha todos os campos necessários para cadastrar um novo ingrediente!'
       );
     }
 
@@ -20,24 +17,15 @@ class IngredientCreateService {
     );
 
     if (checkIngredientExists) {
-      await diskStorage.deleteTmpFile(imagePath);
-
-      throw new AppError(
-        'Este ingrediente já existe. Escolha outro nome para o ingrediente que deseja cadastrar.'
-      );
+      throw new AppError('Já existe um ingrediente com este nome.');
     }
 
-    const filename = await diskStorage.saveFile(imagePath);
-
-    const ingredient_id = await this.ingredientsRepository.create({
-      name,
-      imagePath: filename,
-    });
+    const ingredient_id = await this.ingredientsRepository.create(name);
 
     return {
       id: Number(ingredient_id),
       name,
-      imagePath,
+      imagePath: null,
     };
   }
 }

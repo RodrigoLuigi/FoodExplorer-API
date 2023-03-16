@@ -1,8 +1,8 @@
 const knex = require('../database/knex');
 
 class IngredientsRepository {
-  async create({ name, imagePath }) {
-    const ingredient_id = await knex('ingredients').insert({ name, imagePath });
+  async create(name) {
+    const ingredient_id = await knex('ingredients').insert({ name });
 
     return ingredient_id;
   }
@@ -17,6 +17,15 @@ class IngredientsRepository {
     const ingredient = await knex('ingredients').where({ name }).first();
 
     return ingredient;
+  }
+
+  async findIngredients(ingredients) {
+    const ingredientsFound = await knex('ingredients').whereIn(
+      'id',
+      ingredients
+    );
+
+    return ingredientsFound;
   }
 
   async delete(id) {

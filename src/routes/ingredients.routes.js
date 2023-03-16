@@ -1,6 +1,6 @@
 const { Router } = require('express');
-const multer = require("multer");
-const uploadConfig = require("../configs/upload");
+const multer = require('multer');
+const uploadConfig = require('../configs/upload');
 
 const IngredientsController = require('../controllers/IngredientsController');
 const IngredientsImageController = require('../controllers/IngredientsImageController');
@@ -17,9 +17,12 @@ ingredientsRoutes.put('/:id', ingredientsController.update);
 
 ingredientsRoutes.delete('/:id', ingredientsController.delete);
 
-ingredientsRoutes.post('/', upload.single("ingredientImage"), ingredientsController.create);
+ingredientsRoutes.post('/', ingredientsController.create);
 
-ingredientsRoutes.patch('/image/:id', upload.single("ingredientImage"), ingredientsImageController.update);
-
+ingredientsRoutes.patch(
+  '/image/:id',
+  upload.single('ingredientImage'),
+  ingredientsImageController.update
+);
 
 module.exports = ingredientsRoutes;

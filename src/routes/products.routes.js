@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const multer = require("multer");
-const uploadConfig = require("../configs/upload");
+const multer = require('multer');
+const uploadConfig = require('../configs/upload');
 
 const ProductsController = require('../controllers/ProductsController');
-const ProductsImageController = require('../controllers/ProductsImageController')
+const ProductsImageController = require('../controllers/ProductsImageController');
 
 const productsController = new ProductsController();
 const productsImageController = new ProductsImageController();
@@ -19,8 +19,12 @@ productsRoutes.put('/:id', productsController.update);
 
 productsRoutes.delete('/:id', productsController.delete);
 
-productsRoutes.post('/', upload.single("productImage"), productsController.create);
+productsRoutes.post('/', productsController.create);
 
-productsRoutes.patch('/image/:id', upload.single("productImage"), productsImageController.update);
+productsRoutes.patch(
+  '/image/:id',
+  upload.single('productImage'),
+  productsImageController.update
+);
 
 module.exports = productsRoutes;

@@ -1,6 +1,3 @@
-const knex = require('../database/knex');
-const AppError = require('../utils/AppError');
-
 const IngredientsRepository = require('../repositories/IngredientsRepository');
 
 const IngredientIndexService = require('../services/ingredients/IngredientIndexService');
@@ -11,14 +8,13 @@ const IngredientUpdateService = require('../services/ingredients/IngredientUpdat
 class IngredientsController {
   async create(request, response) {
     const { name } = request.body;
-    const imagePath = request.file?.filename;
 
     const ingredientsRepository = new IngredientsRepository();
     const ingredientCreateService = new IngredientCreateService(
       ingredientsRepository
     );
 
-    const ingredient = await ingredientCreateService.execute(name, imagePath);
+    const ingredient = await ingredientCreateService.execute(name);
 
     return response.status(201).json(ingredient);
   }

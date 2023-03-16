@@ -1,161 +1,96 @@
 const knex = require('../database/knex');
 const AppError = require('../utils/AppError');
+
 const DiskStorage = require('../providers/DiskStorage');
+
+const ProductsRepository = require('../repositories/ProductsRepository');
+const IngredientsRepository = require('../repositories/IngredientsRepository');
+const ProductIngredientsRepository = require('../repositories/ProductIngredientsRepository');
+
+const ProductShowService = require('../services/products/ProductShowService');
+const ProductCreateService = require('../services/products/ProductCreateService');
+const ProductDeleteService = require('../services/products/ProductDeleteService');
+const ProductUpdateService = require('../services/products/ProductUpdateService');
+const ProductIndexWithSearchService = require('../services/products/ProductIndexWithSearchService');
+
+const ProductIngredientsCreateService = require('../services/product_ingredients/ProductIngredientsCreateService');
 
 class ProductsController {
   async create(request, response) {
     const { name, description, price, category_id, ingredients } = request.body;
-    const imagePath = request.file?.filename;
 
-    const diskStorage = new DiskStorage();
+    const ingredientsRepository = new IngredientsRepository();
 
-    if (!name || !description || !price || !category_id || !ingredients) {
-      throw new AppError(
-        'Você deixou um campo vazio. Preencha todos os campos necessários para cadastrar um novo produto!'
-      );
-    }
+    const productsRepository = new ProductsRepository();
+    const productCreateService = new ProductCreateService(
+      productsRepository,
+      ingredientsRepository
+    );
 
-    const checkProductExists = await knex('products').where({ name }).first();
+    const productIngredientsRepository = new ProductIngredientsRepository();
+    const productIngredientsCreateService = new ProductIngredientsCreateService(
+      productIngredientsRepository
+    );
 
-    if (checkProductExists) {
-      throw new AppError(
-        'Este produto já existe. Escolha outro nome para o produto que deseja cadastrar.'
-      );
-    }
-
-    const filename = await diskStorage.saveFile(imagePath);
-
-    const product_id = await knex('products').insert({
+    const product = await productCreateService.execute({
       name,
       description,
       price,
       category_id,
-      imagePath: filename,
+      ingredients,
     });
 
-    const productIngredients = JSON.parse(ingredients);
+    await productIngredientsCreateService.execute(product.id, ingredients);
 
-    const ingredientsInsert = productIngredients.map((ingredient_id) => {
-      return {
-        ingredient_id,
-        product_id: Number(product_id),
-      };
-    });
-
-    // ajustar semântica product_ingredients'
-    await knex('product_ingredient').insert(ingredientsInsert);
-
-    return response
-      .status(201)
-      .json({ name, description, price, category_id, ingredientsInsert });
+    return response.status(201).json(product);
   }
 
   async show(request, response) {
     const { id } = request.params;
 
-    const product = await knex('products').where({ id }).first();
+    const productsRepostory = new ProductsRepository();
+    const productIngredientsRepository = new ProductIngredientsRepository();
 
-    if (!product) {
-      throw new AppError(`O produto com id ${id} não existe`);
-    }
+    const productShowService = new ProductShowService(
+      productsRepostory,
+      productIngredientsRepository
+    );
 
-    const ingredients = await knex('product_ingredient')
-      .select([
-        'ingredients.id',
-        'ingredients.name',
-        'ingredients.imagePath',
-        'product_ingredient.product_id',
-      ])
-      .where('product_ingredient.product_id', id)
-      .innerJoin(
-        'ingredients',
-        'ingredients.id',
-        'product_ingredient.ingredient_id'
-      );
+    const product = await productShowService.execute(id);
 
-    return response.json({
-      ...product,
-      ingredients,
-    });
+    return response.json(product);
   }
 
   async index(request, response) {
     const { name, ingredients } = request.query;
 
-    let products;
+    const productsRepository = new ProductsRepository();
+    const productIngredientsRepository = new ProductIngredientsRepository();
 
-    if (ingredients) {
-      const filterIngredients = ingredients
-        .split(',')
-        .map((ingredient) => ingredient.trim());
+    const productIndexWithSearchService = new ProductIndexWithSearchService(
+      productsRepository,
+      productIngredientsRepository
+    );
 
-      products = await knex('ingredients')
-        .select([
-          'products.id',
-          'products.name',
-          'products.description',
-          'products.price',
-          'products.category_id',
-        ])
-        .whereLike('products.name', `%${name}%`)
-        .whereIn('ingredients.name', filterIngredients)
-        .innerJoin(
-          'product_ingredient',
-          'product_ingredient.ingredient_id',
-          'ingredients.id'
-        )
-        .innerJoin('products', 'products.id', 'product_ingredient.product_id')
-        .groupBy('products.name')
-        .orderBy('products.name');
-    } else {
-      products = await knex('products')
-        .whereLike('name', `%${name}%`)
-        .orderBy('id');
-    }
+    const products = await productIndexWithSearchService.execute(
+      name,
+      ingredients
+    );
 
-    const productIngredients = await knex('product_ingredient')
-      .select([
-        'ingredients.id',
-        'ingredients.name',
-        'ingredients.imagePath',
-        'product_ingredient.product_id',
-      ])
-      .innerJoin(
-        'ingredients',
-        'ingredients.id',
-        'product_ingredient.ingredient_id'
-      );
-
-    const productWithIngredients = products.map((product) => {
-      const ingredientsProduct = productIngredients.filter(
-        (ingredient) => ingredient.product_id === product.id
-      );
-
-      return {
-        ...product,
-        ingredients: ingredientsProduct,
-      };
-    });
-
-    return response.json(productWithIngredients);
+    return response.json(products);
   }
 
   async delete(request, response) {
     const { id } = request.params;
 
     const diskStorage = new DiskStorage();
+    const productsRepository = new ProductsRepository();
+    const productDeleteService = new ProductDeleteService(
+      productsRepository,
+      diskStorage
+    );
 
-    const product = await knex('products').where({ id }).first();
-
-    if (!product) {
-      throw new AppError(`O produto com id ${id} não existe`);
-    }
-
-    if (product.imagePath) {
-      await diskStorage.deleteFile(product.imagePath);
-    }
-
-    await knex('products').where({ id }).delete();
+    await productDeleteService.execute(id);
 
     return response.status(200).json();
   }
@@ -164,44 +99,26 @@ class ProductsController {
     const { name, description, price, category_id, ingredients } = request.body;
     const { id } = request.params;
 
-    const product = await knex('products').where({ id }).first();
+    const productsRepository = new ProductsRepository();
+    const ingredientsRepository = new IngredientsRepository();
+    const productIngredientsRepository = new ProductIngredientsRepository();
 
-    if (!product) {
-      throw new AppError('Produto não encontrado.');
-    }
+    const productUpdateService = new ProductUpdateService(
+      productsRepository,
+      ingredientsRepository,
+      productIngredientsRepository
+    );
 
-    if (name) {
-      const productWithUpdateName = await knex('products')
-        .where({ name })
-        .first();
+    const product = await productUpdateService.execute(
+      id,
+      name,
+      description,
+      price,
+      category_id,
+      ingredients
+    );
 
-      if (productWithUpdateName && productWithUpdateName.id !== product.id) {
-        throw new AppError('Já existe um produto com este nome.');
-      }
-    }
-
-    product.name = name ?? product.name;
-    product.description = description ?? product.description;
-    product.price = price ?? product.price;
-    product.category_id = category_id ?? product.category_id;
-
-    await knex('products').update(product).where({ id: product.id });
-
-    const ingredientsWithUpdate = ingredients.map((ingredient_id) => {
-      return {
-        ingredient_id,
-        product_id: product.id,
-      };
-    });
-
-    await knex('product_ingredient').where({ product_id: product.id }).delete();
-
-    // ajustar semântica product_ingredients'
-    await knex('product_ingredient')
-      .insert(ingredientsWithUpdate)
-      .where({ product_id: id });
-
-    return response.json({ ...product, ingredientsWithUpdate });
+    return response.status(200).json(product);
   }
 }
 
