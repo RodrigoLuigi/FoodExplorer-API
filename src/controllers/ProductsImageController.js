@@ -1,28 +1,23 @@
 const knex = require('../database/knex');
 const AppError = require('../utils/AppError');
 const DiskStorage = require('../providers/DiskStorage');
+const ProductsRepository = require('../repositories/ProductsRepository');
+const ProductImageUpdateService = require('../services/products/ProductImageUpdateService');
 
 class ProductsImageController {
   async update(request, response) {
     const { id } = request.params;
     const imagePath = request.file.filename;
 
+    const productsRepository = new ProductsRepository();
     const diskStorage = new DiskStorage();
 
-    const product = await knex('products').where({ id }).first();
+    const productImageUpdateService = new ProductImageUpdateService(
+      productsRepository,
+      diskStorage
+    );
 
-    if (!product) {
-      throw new AppError('Produto não encontrado.');
-    }
-
-    if (product.imagePath) {
-      await diskStorage.deleteFile(product.imagePath);
-    }
-
-    const fileName = await diskStorage.saveFile(imagePath);
-    product.imagePath = fileName;
-
-    await knex('products').update(product).where({ id });
+    const product = await productImageUpdateService.execute(id, imagePath);
 
     return response.json(product);
   }
