@@ -24,6 +24,12 @@ class ProductsRepository {
     return product;
   }
 
+  async findProducts(products) {
+    const productsFound = await knex('products').whereIn('id', products);
+
+    return productsFound;
+  }
+
   async indexWithSearchByName(name) {
     const products = await knex('products')
       .whereLike('name', `%${name}%`)

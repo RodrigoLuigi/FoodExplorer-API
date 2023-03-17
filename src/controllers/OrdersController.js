@@ -1,104 +1,79 @@
-const knex = require('../database/knex');
-const AppError = require('../utils/AppError');
+const OrdersRepository = require('../repositories/OrdersRepository');
+const OrderProductsRepository = require('../repositories/OrderProductsRepository');
+
+const OrderShowService = require('../services/orders/OrderShowService');
+const OrderIndexService = require('../services/orders/OrderIndexService');
+const OrderCreateService = require('../services/orders/OrderCreateService');
+const OrderUpdateService = require('../services/orders/OrderUpdateService');
+const OrderProductsCreateService = require('../services/order_products/OrderProductsCreateService');
+const ProductsRepository = require('../repositories/ProductsRepository');
 
 class OrdersController {
   async create(request, response) {
-    const { user_id } = request.params;
+    const user_id = request.user.id;
     const { products } = request.body;
 
-    if (!products) {
-      throw new AppError('O carrinho está vazio!');
-    }
+    const ordersRepository = new OrdersRepository();
+    const productsRepository = new ProductsRepository();
+    const orderProductsRepository = new OrderProductsRepository();
 
-    const orders = await knex('orders').where({ user_id });
+    const orderCreateService = new OrderCreateService(
+      ordersRepository,
+      productsRepository
+    );
 
-    const code = String(orders.length + 1).padStart(4, '0');
+    const orderProductsCreateService = new OrderProductsCreateService(
+      orderProductsRepository
+    );
 
-    const order_id = await knex('orders').insert({
-      user_id,
-      code,
-    });
+    const order_id = await orderCreateService.execute(user_id, products);
 
-    const productInsert = products.map(({ product_id, quantity }) => {
-      return {
-        order_id,
-        product_id,
-        quantity,
-      };
-    });
+    await orderProductsCreateService.execute(order_id, products);
 
-    await knex('order_product').insert(productInsert);
-
-    return response.json({
-      user_id,
-      code,
-      products,
-    });
+    return response.status(201).json();
   }
 
   async show(request, response) {
     const { id } = request.params;
+    const user_id = request.user.id;
 
-    const order = await knex('orders').where({ id }).first();
+    const ordersRepository = new OrdersRepository();
+    const orderProductsRepository = new OrderProductsRepository();
 
-    const products = await knex('order_product')
-      .select([
-        'products.id',
-        'products.name',
-        'products.price',
-        'products.imagePath',
-        'order_product.order_id',
-        'order_product.quantity',
-      ])
-      .where('order_product.order_id', id)
-      .innerJoin('products', 'products.id', 'order_product.product_id');
+    const orderShowService = new OrderShowService(
+      ordersRepository,
+      orderProductsRepository
+    );
 
-    return response.json({
-      ...order,
-      products,
-    });
+    const order = await orderShowService.execute(id, user_id);
+
+    return response.json(order);
   }
 
   async index(request, response) {
     const user_id = request.user.id;
 
-    const orders = await knex('orders').where({ user_id });
+    const ordersRepository = new OrdersRepository();
+    const orderProductsRepository = new OrderProductsRepository();
 
-    const orderProducts = await knex('order_product')
-      .select([
-        'products.id',
-        'products.name',
-        'products.price',
-        'products.imagePath',
-        'order_product.order_id',
-        'order_product.quantity',
-      ])
-      .innerJoin('products', 'products.id', 'order_product.product_id');
+    const orderIndexService = new OrderIndexService(
+      ordersRepository,
+      orderProductsRepository
+    );
 
-    const orderWithProducts = orders.map((order) => {
-      const productsOrder = orderProducts.filter(
-        (product) => product.order_id === order.id
-      );
-      return {
-        ...order,
-        products: productsOrder,
-      };
-    });
+    const ordersWithProducts = await orderIndexService.execute(user_id);
 
-    return response.json(orderWithProducts);
+    return response.json(ordersWithProducts);
   }
 
   async update(request, response) {
     const { order_id } = request.params;
     const { status } = request.body;
 
-    if (!['WAITING', 'IN_PRODUCTION', 'DONE'].includes(status)) {
-      throw new AppError(
-        'Status should be one of these. WAITING, IN_PRODUCTION, DONE'
-      );
-    }
+    const ordersRepository = new OrdersRepository();
+    const orderUpdateService = new OrderUpdateService(ordersRepository);
 
-    await knex('orders').where({ id: order_id }).update('status', status);
+    await orderUpdateService.execute(order_id, status);
 
     return response.status(204).json();
   }
