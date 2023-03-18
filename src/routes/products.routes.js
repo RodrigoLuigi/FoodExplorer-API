@@ -2,6 +2,9 @@ const { Router } = require('express');
 const multer = require('multer');
 const uploadConfig = require('../configs/upload');
 
+const is = require('../middlewares/checkUsersPermissions');
+const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
+
 const ProductsController = require('../controllers/ProductsController');
 const ProductsImageController = require('../controllers/ProductsImageController');
 
@@ -15,14 +18,31 @@ productsRoutes.get('/', productsController.index);
 
 productsRoutes.get('/:id', productsController.show);
 
-productsRoutes.put('/:id', productsController.update);
+productsRoutes.put(
+  '/:id',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN']),
+  productsController.update
+);
 
-productsRoutes.delete('/:id', productsController.delete);
+productsRoutes.delete(
+  '/:id',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN']),
+  productsController.delete
+);
 
-productsRoutes.post('/', productsController.create);
+productsRoutes.post(
+  '/',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN']),
+  productsController.create
+);
 
 productsRoutes.patch(
   '/image/:id',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN']),
   upload.single('productImage'),
   productsImageController.update
 );

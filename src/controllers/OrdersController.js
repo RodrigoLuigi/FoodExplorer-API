@@ -26,11 +26,11 @@ class OrdersController {
       orderProductsRepository
     );
 
-    const order_id = await orderCreateService.execute(user_id, products);
+    const order = await orderCreateService.execute(user_id, products);
 
-    await orderProductsCreateService.execute(order_id, products);
+    await orderProductsCreateService.execute(order.id, products);
 
-    return response.status(201).json();
+    return response.status(201).json(order);
   }
 
   async show(request, response) {

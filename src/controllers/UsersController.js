@@ -1,6 +1,8 @@
 const UserRepository = require('../repositories/UserRepository');
 const RoleRepository = require('../repositories/RoleRepository');
 const UserRoleRepository = require('../repositories/UserRoleRepository');
+
+const UserIndexService = require('../services/users/UserIndexService');
 const UserCreateService = require('../services/users/UserCreateService');
 const UserUpdateService = require('../services/users/UserUpdateService');
 const UserRoleCreateService = require('../services/user_role/UserRoleCreateService');
@@ -48,6 +50,20 @@ class UsersController {
     });
 
     return response.status(200).json(updatedUser);
+  }
+
+  async index(request, response) {
+    const userRepository = new UserRepository();
+    const userRoleRepository = new UserRoleRepository();
+
+    const userIndexService = new UserIndexService(
+      userRepository,
+      userRoleRepository
+    );
+
+    const users = await userIndexService.execute();
+
+    return response.status(200).json(users);
   }
 }
 

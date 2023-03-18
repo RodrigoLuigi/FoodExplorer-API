@@ -10,10 +10,12 @@ const userRoutes = Router();
 
 userRoutes.post('/', usersController.create);
 
+userRoutes.get('/', usersController.index);
+
 userRoutes.put(
   '/',
   ensureAuthenticated,
-  is(['ROLE_ADMIN']),
+  is(['ROLE_USER']),
   usersController.update
 );
 

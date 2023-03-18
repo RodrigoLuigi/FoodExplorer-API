@@ -35,7 +35,13 @@ class OrderCreateService {
 
     const order_id = await this.ordersRepository.create(user_id, code);
 
-    return order_id;
+    return {
+      id: Number(order_id),
+      status: 'WAITING',
+      code,
+      description: null,
+      products: checkProductsExists,
+    };
   }
 }
 

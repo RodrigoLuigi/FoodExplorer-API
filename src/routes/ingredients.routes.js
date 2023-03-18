@@ -2,6 +2,9 @@ const { Router } = require('express');
 const multer = require('multer');
 const uploadConfig = require('../configs/upload');
 
+const is = require('../middlewares/checkUsersPermissions');
+const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
+
 const IngredientsController = require('../controllers/IngredientsController');
 const IngredientsImageController = require('../controllers/IngredientsImageController');
 
@@ -13,14 +16,31 @@ const upload = multer(uploadConfig.MULTER);
 
 ingredientsRoutes.get('/', ingredientsController.index);
 
-ingredientsRoutes.put('/:id', ingredientsController.update);
+ingredientsRoutes.put(
+  '/:id',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN']),
+  ingredientsController.update
+);
 
-ingredientsRoutes.delete('/:id', ingredientsController.delete);
+ingredientsRoutes.delete(
+  '/:id',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN']),
+  ingredientsController.delete
+);
 
-ingredientsRoutes.post('/', ingredientsController.create);
+ingredientsRoutes.post(
+  '/',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN']),
+  ingredientsController.create
+);
 
 ingredientsRoutes.patch(
   '/image/:id',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN']),
   upload.single('ingredientImage'),
   ingredientsImageController.update
 );

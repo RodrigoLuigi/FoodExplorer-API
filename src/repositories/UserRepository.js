@@ -26,6 +26,12 @@ class UserRepository {
   async update(user) {
     await knex('users').update(user).where({ id: user.id });
   }
+
+  async index() {
+    const users = await knex('users');
+
+    return users;
+  }
 }
 
 module.exports = UserRepository;
