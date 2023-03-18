@@ -21,14 +21,3 @@ npm install multer
 npm install bcryptjs
 
 npm install jsonwebtoken
-
-**LISTA DE TAREFAS**
-
-* OrdersController / orders.routes -> organizar ideias, fazer tratamentos e refatorar
-* Middleware de autenticação
-
-
-
-
-
-
