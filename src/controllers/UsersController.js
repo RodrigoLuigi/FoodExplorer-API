@@ -9,7 +9,7 @@ const UserRoleCreateService = require('../services/user_role/UserRoleCreateServi
 
 class UsersController {
   async create(request, response) {
-    const { name, email, password, roles = [2] } = request.body;
+    const { name, email, password, role = 2 } = request.body;
 
     const roleRepository = new RoleRepository();
 
@@ -26,10 +26,10 @@ class UsersController {
       name,
       email,
       password,
-      roles,
+      role,
     });
 
-    await userRoleCreateService.execute(user.id, roles);
+    await userRoleCreateService.execute(user.id, role);
 
     return response.status(201).json(user);
   }

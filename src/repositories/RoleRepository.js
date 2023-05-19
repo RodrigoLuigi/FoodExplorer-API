@@ -7,6 +7,12 @@ class RoleRepository {
     return findRoles;
   }
 
+  async findById(id) {
+    const role = await knex('roles').where({ id }).first();
+
+    return role;
+  }
+
   async findByName(name) {
     const role = await knex('roles').where({ name }).first();
 

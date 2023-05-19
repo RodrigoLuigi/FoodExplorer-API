@@ -24,7 +24,14 @@ class UserRepository {
   }
 
   async update(user) {
-    await knex('users').update(user).where({ id: user.id });
+    await knex('users')
+      .update({
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        updated_at: knex.fn.now(),
+      })
+      .where({ id: user.id });
   }
 
   async index() {

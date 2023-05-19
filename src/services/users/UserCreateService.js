@@ -8,24 +8,24 @@ class UserCreateService {
     this.userRoleRepository = userRoleRepository;
   }
 
-  async execute({ name, email, password, roles }) {
+  async execute({ name, email, password, role }) {
     const checkUserExists = await this.userRepository.findByEmail(email);
 
     if (checkUserExists) {
       throw new AppError('Este e-mail já está em uso.');
     }
 
-    if (roles.length === 0) {
+    /* if (roles.length === 0) {
       throw new AppError('As Roles não foram adicionadas.');
-    }
+    } */
+    const checkRoleExists = await this.roleRepository.findById(role);
+    /* const checkRoleExists = await this.roleRepository.findRoles(roles); */
 
-    const checkRolesExists = await this.roleRepository.findRoles(roles);
+    /*  const rolesIds = checkRolesExists.map((role) => role.id);
 
-    const rolesIds = checkRolesExists.map((role) => role.id);
+    const checkRoles = roles.every((r) => rolesIds.includes(r)); */
 
-    const checkRoles = roles.every((r) => rolesIds.includes(r));
-
-    if (!checkRoles) {
+    if (!checkRoleExists) {
       throw new AppError('Roles incorretas ou não existem!');
     }
 
@@ -42,7 +42,7 @@ class UserCreateService {
       name,
       email,
       hashedPassword,
-      roles: checkRolesExists,
+      role: checkRoleExists,
     };
   }
 }

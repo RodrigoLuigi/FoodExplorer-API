@@ -13,10 +13,12 @@ class UserUpdateService {
       throw new AppError('Usuário não encontrado.');
     }
 
-    const userWithUpdateEmail = await this.userRepository.findByEmail(email);
+    if (email) {
+      const userWithUpdateEmail = await this.userRepository.findByEmail(email);
 
-    if (userWithUpdateEmail && userWithUpdateEmail.id !== user.id) {
-      throw new AppError('Este email já está em uso.');
+      if (userWithUpdateEmail && userWithUpdateEmail.id !== user.id) {
+        throw new AppError('Este email já está em uso.');
+      }
     }
 
     user.name = name ?? user.name;
@@ -37,6 +39,8 @@ class UserUpdateService {
 
       user.password = await hash(password, 8);
     }
+
+    user.updated_at = new Date().toISOString();
 
     await this.userRepository.update(user);
 
