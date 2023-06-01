@@ -14,7 +14,7 @@ ordersRoutes.use(ensureAuthenticated);
 ordersRoutes.post(
   '/',
   ensureAuthenticated,
-  is(['ROLE_USER']),
+  is(['ROLE_ADMIN', 'ROLE_USER']),
   ordersController.create
 );
 
@@ -28,14 +28,14 @@ ordersRoutes.patch(
 ordersRoutes.get(
   '/',
   ensureAuthenticated,
-  is(['ROLE_USER']),
+  is(['ROLE_ADMIN', 'ROLE_USER']),
   ordersController.index
 );
 
 ordersRoutes.get(
   '/:id',
   ensureAuthenticated,
-  is(['ROLE_USER']),
+  is(['ROLE_ADMIN', 'ROLE_USER']),
   ordersController.show
 );
 

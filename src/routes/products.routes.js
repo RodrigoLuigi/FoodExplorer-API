@@ -14,9 +14,19 @@ const productsImageController = new ProductsImageController();
 const productsRoutes = Router();
 const upload = multer(uploadConfig.MULTER);
 
-productsRoutes.get('/', productsController.index);
+productsRoutes.get(
+  '/',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN', 'ROLE_USER']),
+  productsController.index
+);
 
-productsRoutes.get('/:id', productsController.show);
+productsRoutes.get(
+  '/:id',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN', 'ROLE_USER']),
+  productsController.show
+);
 
 productsRoutes.put(
   '/:id',

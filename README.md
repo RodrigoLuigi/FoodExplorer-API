@@ -44,3 +44,40 @@ refatorar UserUpdateService.js
 - refactor: ajusts semantic on function create at UserRoleRepository.js
 - refactor: implements dependency injection on SessiosController.js
 - refactor: rename 'roles' to 'role' in function Create
+
+**PERMISSIONS**
+_**PERMISSÔES EXISTENTES PARA PENEIRA**_
+
+- 1 update_user - ADM - USER
+- 2 index_user - ADM
+- 3 create_user
+
+- 4 create_session
+
+- 5 create_role - ADM
+
+- 6 index_product - ADM - USER
+- 7 show_product - ADM - USER
+- 8 update_product - ADM
+- 9 delete_product - ADM
+- 10 create_product - ADM
+
+- 11 create_permissions - ADM
+
+- 12 create_order - ADM - USER
+- 13 update_order - ADM
+- 14 index_order - ADM - USER
+- 15 show_order - ADM - USER
+
+- 16 index_ingredients - ADM - USER
+- 17 update_ingredient - ADM
+- 18 delete_ingredient - ADM
+- 19 create_ingredient - ADM
+- 20 patch_ingredient - ADM
+
+- 21 index_categories - ADM - USER
+- 22 create_category - ADM
+- 23 delete_category - ADM
+- 24 indexProductsBy_categorie - ADM - USER
+
+user 1 , 3 , 4 , 6 , 7 , 12 , 14 , 15 , 16 , 21 , 24

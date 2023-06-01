@@ -46,6 +46,7 @@ class ProductsRepository {
         'products.description',
         'products.price',
         'products.category_id',
+        'products.imagePath',
       ])
       .whereLike('products.name', `%${name}%`)
       .whereIn('ingredients.name', ingredients)

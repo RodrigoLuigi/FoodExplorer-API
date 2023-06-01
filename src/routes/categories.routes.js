@@ -9,7 +9,12 @@ const categoriesController = new CategoriesController();
 
 const categoriesRoutes = Router();
 
-categoriesRoutes.get('/', categoriesController.index);
+categoriesRoutes.get(
+  '/',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN', 'ROLE_USER']),
+  categoriesController.index
+);
 
 categoriesRoutes.post(
   '/',
@@ -27,6 +32,8 @@ categoriesRoutes.delete(
 
 categoriesRoutes.get(
   '/:categoryId/products',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN', 'ROLE_USER']),
   categoriesController.indexByCategory
 );
 

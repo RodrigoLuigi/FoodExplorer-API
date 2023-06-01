@@ -14,7 +14,12 @@ const ingredientsImageController = new IngredientsImageController();
 const ingredientsRoutes = Router();
 const upload = multer(uploadConfig.MULTER);
 
-ingredientsRoutes.get('/', ingredientsController.index);
+ingredientsRoutes.get(
+  '/',
+  ensureAuthenticated,
+  is(['ROLE_ADMIN', 'ROLE_USER']),
+  ingredientsController.index
+);
 
 ingredientsRoutes.put(
   '/:id',
