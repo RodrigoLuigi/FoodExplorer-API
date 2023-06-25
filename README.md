@@ -24,6 +24,11 @@ npm install jsonwebtoken
 
 npm install cors
 
+npm install dovtenv --save
+
+npx pm2 init
+https://pm2.keymetrics.io/docs/usage/use-pm2-with-cloud-providers/#set-your-ecosystem-file
+
 **importante TO-DO-LIST**
 ajustar permissões de acesso às rotas
 verificar como é feito o cadastro das 'roles'
