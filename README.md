@@ -9,6 +9,8 @@
   <a href="https://github.com/RodrigoLuigi" target="_blank">Author</a>
 </p>
 
+🔗 **Deploy** -> <a hred="https://foodexplorer-web.netlify.app/" target="_blank">https://foodexplorer-web.netlify.app/</a>
+
 <br>
 
 ## <img id="sobre" src="https://imgur.com/VhTBbHg.png" alt="imagem de um notebook" align="center" width="30px"> _**O que desenvolvemos neste Projeto?**_
