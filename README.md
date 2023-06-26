@@ -1,90 +1,177 @@
-npm init -y
+# <h1 id="top" align="center">Food**Explorer** API - Backend</h1>
 
-npm install express
+<p align="center">
+  <a href="#sobre">Sobre</a> &#xa0; | &#xa0;
+  <a href="#gear-features">Features</a> &#xa0; | &#xa0;
+  <a href="#-tecnologias">Tecnologias</a> &#xa0; | &#xa0;
+  <a href="#-requisitos">Requisitos</a> &#xa0; | &#xa0;
+  <a href="#checkered_flag-iniciando">Iniciando</a> &#xa0; | &#xa0;
+  <a href="https://github.com/RodrigoLuigi" target="_blank">Author</a>
+</p>
 
-.editorconfig
+<br>
 
-npm init @eslint/config
+## <img id="sobre" src="https://imgur.com/VhTBbHg.png" alt="imagem de um notebook" align="center" width="30px"> _**O que desenvolvemos neste Projeto?**_
 
-npm install sqlite3 sqlite --save
+📌 Desenvolvemos o projeto com módulos separados para facilitar a escalabilidade e a manutenção da nossa aplicação.
+O "food explorer" tem duas personas: o admin e o usuário. O admin, responsável pelo restaurante, pode criar,
+visualizar, editar e apagar pratos a qualquer momento. Cada prato contém uma imagem, nome, categoria, descrição breve, ingredientes e preço. Ao adicionar um prato, o admin recebe uma mensagem de sucesso e é redirecionado para a página principal. O usuário pode visualizar todos os pratos cadastrados e obter informações mais detalhadas ao clicar em um prato específico.
 
-npm install knex --save
+Desenvolvido utilizando **Node.js** e **Express.** Criação de um banco de dados utilizando **SQLite**, e manipulação do DataBase utilizando o **Query Builder Knex.js** e **Beekeper Studio**.
 
-npx knex init
+## :gear: Features
 
-npx knex migrate:make "nome da migrate"
+:heavy_check_mark: Cadastro de usuário\
+:heavy_check_mark: Autenticação do usuário\
+:heavy_check_mark: Cadastro de produto\
+:heavy_check_mark: Deletar produto
+:heavy_check_mark: Editar produto
+:heavy_check_mark: Upload imagem do produto\
+:heavy_check_mark: Pesquisar por produtos\
+:heavy_check_mark: Listar produtos\
+:heavy_check_mark: Detalhes do produto\
+:heavy_check_mark: Adicionar produto pedido\
+:heavy_check_mark: Favoritar produto\
 
-npm install express-async-errors --save
+## 👨‍💻 Tecnologias
 
-npm install multer
+As seguintes ferramentas foram usadas neste projeto:
 
-npm install bcryptjs
+- [Node.js](https://nodejs.org/en/)
+- [JavaScript](https://www.w3schools.com/js/default.asp)
 
-npm install jsonwebtoken
+## :books: Bibliotecas
 
-npm install cors
+_**As seguintes bibliotecas foram utilizadas neste projeto:**_
 
-npm install dovtenv --save
+- [Express](https://expressjs.com/pt-br/)
+- [SQLite](https://www.sqlite.org/docs.html)
+- [Knex](https://knexjs.org/)
+- [Cors](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/CORS)
+- [Bcryptjs](https://www.npmjs.com/package/bcrypt)
+- [JWT - Jason Web Token](https://jwt.io/introduction)
+- [Multer](https://www.npmjs.com/package/multer)
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+- [pm2](https://pm2.keymetrics.io/docs/usage/quick-start/)
+- [Jest](https://jestjs.io/pt-BR/)
 
-npx pm2 init
-https://pm2.keymetrics.io/docs/usage/use-pm2-with-cloud-providers/#set-your-ecosystem-file
+## 📝 Requisitos
 
-npm install pm2
+- [Git](https://git-scm.com)
+- [Node](https://nodejs.org/en/)
+- [npm](https://www.npmjs.com/)
 
-**importante TO-DO-LIST**
-ajustar permissões de acesso às rotas
-verificar como é feito o cadastro das 'roles'
-refatorar UserRoleCreateService.js
-refatorar UserCreateService.js
-refatorar UserUpdateService.js
+## :checkered_flag: Iniciando
 
-**COMPLETE TASK**
+```bash
+# Clone este projeto
+$ git clone https://github.com/RodrigoLuigi/FoodExplorer-API.git
 
-- implements CORS in server.js
-- feat: create sessions service
-- fix: correcting bug in UserRoleCreateService.js
-- fix: correcting bug in UserCreateService.js
-- feat: implements error handling in UserUpdateService.js
-- feat: create function findById on RoleRepository.js
-- refactor: adjust function update on UserRepository.js
-- feat: create function showUserRole on UserRoleRepository.js
-- refactor: ajusts semantic on function create at UserRoleRepository.js
-- refactor: implements dependency injection on SessiosController.js
-- refactor: rename 'roles' to 'role' in function Create
+# Acesse o projeto
+$ cd FoodExplorer-API
 
-**PERMISSIONS**
-_**PERMISSÔES EXISTENTES PARA PENEIRA**_
+# Instale as dependências
+$ npm install
 
-- 1 update_user - ADM - USER
-- 2 index_user - ADM
-- 3 create_user
+# Inicializando Migrations
+$ npm run migrate
 
-- 4 create_session
+# Inicializando projeto
+$ npm start
 
-- 5 create_role - ADM
+# Inicializando projeto modo Desenvolvimento
+$ npm run dev
 
-- 6 index_product - ADM - USER
-- 7 show_product - ADM - USER
-- 8 update_product - ADM
-- 9 delete_product - ADM
-- 10 create_product - ADM
+# O Server irá inicializar em http://localhost:3333
+```
 
-- 11 create_permissions - ADM
+## 🔗 Rotas
 
-- 12 create_order - ADM - USER
-- 13 update_order - ADM
-- 14 index_order - ADM - USER
-- 15 show_order - ADM - USER
+<div style="display: flex">
 
-- 16 index_ingredients - ADM - USER
-- 17 update_ingredient - ADM
-- 18 delete_ingredient - ADM
-- 19 create_ingredient - ADM
-- 20 patch_ingredient - ADM
+```bash
+# [POST] Cadastrar usuário
+/users
 
-- 21 index_categories - ADM - USER
-- 22 create_category - ADM
-- 23 delete_category - ADM
-- 24 indexProductsBy_categorie - ADM - USER
+# [PUT] Atualizar dados do usuário
+/users
 
-user 1 , 3 , 4 , 6 , 7 , 12 , 14 , 15 , 16 , 21 , 24
+# [POST] Fazer login ou Iniciar sessão
+/sessions
+
+# [GET] Listar categorias de produto
+/categories
+
+# [DELETE] Deletar categoria
+/categories/:id
+
+# [POST] Criar categoria
+/categories
+
+# [GET] Listar produtos pela categoria
+/:categoriesId/products
+
+# [POST] Criar ingrediente
+/ingredients
+
+# [DELETE] Deletar ingrediente
+/ingredients/:id
+
+# [PUT] Atualiza dados do ingrediente
+/ingredients/:id
+
+# [GET] Listar ingredientes
+/ingredients
+
+# [PATCH] Atualizar imagem do ingrediente
+/ingredients/image/:id
+
+
+
+```
+
+```bash
+# [POST] Criar produto
+/products
+
+# [DELETE] Deletar produto
+/products/:id
+
+# [PUT] Atualizar dados do produto
+/products/:id
+
+# [GET] Listar produtos
+/products
+
+# [GET] Listar produto
+/products/:id
+
+# [PATCH] Atualizar imagem do produto
+/products/image/:id
+
+# [POST] Criar pedido
+/orders
+
+# [PATCH] Atualizar status do pedido
+/orders/:id
+
+# [GET] Listar pedidos
+/orders
+
+# [GET] Listar pedido
+/orders/:id
+
+# [POST] Criar permissão
+/permissions
+
+# [POST] Criar função (ROLE_USER / ROLE_ADMIN) para atribuir ao usuário
+/roles
+```
+
+</div>
+
+&#xa0;
+
+_**Feito por <a href="https://github.com/RodrigoLuigi" target="_blank">Rodrigo Luigi</a>**_ 👨‍🚀
+
+<a href="#top">Back to top</a>
