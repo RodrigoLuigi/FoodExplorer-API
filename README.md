@@ -33,8 +33,8 @@ do DataBase utilizando o **Query Builder Knex.js** e **Beekeper Studio**.
 :heavy_check_mark: Pesquisar por produtos\
 :heavy_check_mark: Listar produtos\
 :heavy_check_mark: Detalhes do produto\
-:heavy_check_mark: Adicionar produto pedido\
-:heavy_check_mark: Favoritar produto\
+:heavy_check_mark: Adicionar produto ao pedido\
+:heavy_check_mark: Favoritar produto
 
 ## 👨‍💻 Tecnologias
 
