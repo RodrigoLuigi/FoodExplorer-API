@@ -13,19 +13,22 @@
 
 ## <img id="sobre" src="https://imgur.com/VhTBbHg.png" alt="imagem de um notebook" align="center" width="30px"> _**O que desenvolvemos neste Projeto?**_
 
-📌 Desenvolvemos o projeto com módulos separados para facilitar a escalabilidade e a manutenção da nossa aplicação.
+📌 FoodExplorer é uma aplicação de um cardápio digital para um restaurante fictício. Uma aplicação de ponta a ponta com front-end e back-end utilizando as teconologias aprendidas no Explorer
+
+Desenvolvemos o projeto com módulos separados para facilitar a escalabilidade e a manutenção da nossa aplicação.
 O "food explorer" tem duas personas: o admin e o usuário. O admin, responsável pelo restaurante, pode criar,
 visualizar, editar e apagar pratos a qualquer momento. Cada prato contém uma imagem, nome, categoria, descrição breve, ingredientes e preço. Ao adicionar um prato, o admin recebe uma mensagem de sucesso e é redirecionado para a página principal. O usuário pode visualizar todos os pratos cadastrados e obter informações mais detalhadas ao clicar em um prato específico.
 
-Desenvolvido utilizando **Node.js** e **Express.** Criação de um banco de dados utilizando **SQLite**, e manipulação do DataBase utilizando o **Query Builder Knex.js** e **Beekeper Studio**.
+Desenvolvido utilizando **Node.js** e **Express.** Criação de um banco de dados utilizando **SQLite**, e manipulação
+do DataBase utilizando o **Query Builder Knex.js** e **Beekeper Studio**.
 
 ## :gear: Features
 
 :heavy_check_mark: Cadastro de usuário\
 :heavy_check_mark: Autenticação do usuário\
 :heavy_check_mark: Cadastro de produto\
-:heavy_check_mark: Deletar produto
-:heavy_check_mark: Editar produto
+:heavy_check_mark: Deletar produto\
+:heavy_check_mark: Editar produto\
 :heavy_check_mark: Upload imagem do produto\
 :heavy_check_mark: Pesquisar por produtos\
 :heavy_check_mark: Listar produtos\
