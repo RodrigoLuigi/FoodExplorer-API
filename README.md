@@ -13,6 +13,12 @@
 
 🔗 **Deploy** -> <a hred="https://foodexplorer-web.netlify.app/" target="_blank">https://foodexplorer-web.netlify.app/</a>
 
+```
+Login Admin
+email: adm@admin.com
+password: 111xxx
+```
+
 <br>
 
 ## <img id="sobre" src="https://imgur.com/VhTBbHg.png" alt="imagem de um notebook" align="center" width="30px"> _**O que desenvolvemos neste Projeto?**_
@@ -28,16 +34,31 @@ do DataBase utilizando o **Query Builder Knex.js** e **Beekeper Studio**.
 
 ## :gear: Features
 
+:heavy_check_mark: Cadastro de permissão de usuário\
 :heavy_check_mark: Cadastro de usuário\
-:heavy_check_mark: Autenticação do usuário\
+:heavy_check_mark: Atualizar cadastro de usuário\
+:heavy_check_mark: Autenticação de usuário\
+:heavy_check_mark: Cadastro de categoria\
+:heavy_check_mark: Deletar categoria\
+:heavy_check_mark: Editar categoria\
+:heavy_check_mark: Listar categorias\
+:heavy_check_mark: Listar produtos pela categoria\
+:heavy_check_mark: Cadastro de ingrediente\
+:heavy_check_mark: Deletar ingrediente\
+:heavy_check_mark: Editar ingrediente\
+:heavy_check_mark: Listar ingrediente\
+:heavy_check_mark: Upload imagem do ingrediente\
 :heavy_check_mark: Cadastro de produto\
 :heavy_check_mark: Deletar produto\
 :heavy_check_mark: Editar produto\
 :heavy_check_mark: Upload imagem do produto\
-:heavy_check_mark: Pesquisar por produtos\
+:heavy_check_mark: Pesquisar produtos\
 :heavy_check_mark: Listar produtos\
 :heavy_check_mark: Detalhes do produto\
-:heavy_check_mark: Adicionar produto ao pedido\
+:heavy_check_mark: Cadastro de pedido\
+:heavy_check_mark: Detalhes do pedido\
+:heavy_check_mark: Listar pedidos\
+:heavy_check_mark: Editar status do pedido\
 :heavy_check_mark: Favoritar produto
 
 ## 👨‍💻 Tecnologias
