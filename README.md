@@ -63,7 +63,9 @@ do DataBase utilizando o **Query Builder Knex.js** e **Beekeper Studio**.
 
 ## Diagram
 
-![xx](https://imgur.com/fLcBNXN)
+<div align="center">
+  <img src="./public/DER.png" width="100%">
+</div>
 
 ## 👨‍💻 Tecnologias
 
