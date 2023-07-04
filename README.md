@@ -61,6 +61,12 @@ do DataBase utilizando o **Query Builder Knex.js** e **Beekeper Studio**.
 :heavy_check_mark: Editar status do pedido\
 :heavy_check_mark: Favoritar produto
 
+## Diagram
+
+<div align="center">
+  <img src="https://imgur.com/fLcBNXN" width="100%">
+</div>
+
 ## 👨‍💻 Tecnologias
 
 As seguintes ferramentas foram usadas neste projeto:
