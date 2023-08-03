@@ -1,4 +1,5 @@
 const AppError = require('../../utils/AppError');
+const { isValidPriceFormat } = require('../../utils/PriceUtils');
 
 class ProductUpdateService {
   constructor(
@@ -26,6 +27,18 @@ class ProductUpdateService {
       if (productWithUpdateName && productWithUpdateName.id !== product.id) {
         throw new AppError('Já existe um produto com este nome.');
       }
+    }
+
+    if (!isValidPriceFormat(price)) {
+      throw new AppError(
+        'O campo price deve conter apenas valores numéricos no formato 10, 10,00 ou 1.000,00.'
+      );
+    }
+
+    const formattedPrice = price.replace(/\./g, '').replace(',', '.');
+
+    if (!formattedPrice.includes('.')) {
+      price += ',00';
     }
 
     product.name = name ?? product.name;

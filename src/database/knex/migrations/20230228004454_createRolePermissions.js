@@ -1,5 +1,5 @@
 exports.up = (knex) =>
-  knex.schema.createTable('permissions_roles', (table) => {
+  knex.schema.createTable('role_permissions', (table) => {
     table.increments('id');
     table
       .integer('permission_id')
@@ -13,4 +13,4 @@ exports.up = (knex) =>
       .onDelete('CASCADE');
   });
 
-exports.down = (knex) => knex.schema.dropTable('permissions_roles');
+exports.down = (knex) => knex.schema.dropTable('role_permissions');

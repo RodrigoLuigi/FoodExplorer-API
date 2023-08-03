@@ -51,11 +51,11 @@ class ProductsRepository {
       .whereLike('products.name', `%${name}%`)
       .whereIn('ingredients.name', ingredients)
       .innerJoin(
-        'product_ingredient',
-        'product_ingredient.ingredient_id',
+        'product_ingredients',
+        'product_ingredients.ingredient_id',
         'ingredients.id'
       )
-      .innerJoin('products', 'products.id', 'product_ingredient.product_id')
+      .innerJoin('products', 'products.id', 'product_ingredients.product_id')
       .groupBy('products.name')
       .orderBy('products.name');
 

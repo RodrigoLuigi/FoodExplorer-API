@@ -7,10 +7,10 @@ async function getUser(request) {
     id: user_id,
   });
 
-  const roles = await knex('users_roles')
+  const roles = await knex('user_roles')
     .select(['roles.id', 'roles.name', 'roles.description'])
-    .where('users_roles.user_id', user_id)
-    .innerJoin('roles', 'roles.id', 'users_roles.role_id');
+    .where('user_roles.user_id', user_id)
+    .innerJoin('roles', 'roles.id', 'user_roles.role_id');
 
   return {
     ...user,

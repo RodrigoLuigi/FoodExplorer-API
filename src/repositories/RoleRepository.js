@@ -24,6 +24,12 @@ class RoleRepository {
 
     return role;
   }
+
+  async index() {
+    const roles = await knex('roles').orderBy('id');
+
+    return roles;
+  }
 }
 
 module.exports = RoleRepository;

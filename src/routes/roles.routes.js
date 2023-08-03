@@ -10,5 +10,6 @@ const rolesController = new RolesController();
 const rolesRoutes = new Router();
 
 rolesRoutes.post('/', rolesController.create);
+rolesRoutes.get('/', rolesController.index);
 
 module.exports = rolesRoutes;

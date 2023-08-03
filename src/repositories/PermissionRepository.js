@@ -24,6 +24,12 @@ class PermissionRepository {
 
     return permission_id;
   }
+
+  async index() {
+    const permissions = await knex('permissions').orderBy('id');
+
+    return permissions;
+  }
 }
 
 module.exports = PermissionRepository;

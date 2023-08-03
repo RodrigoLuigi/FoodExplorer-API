@@ -2,7 +2,7 @@ const knex = require('../database/knex');
 
 class CategoriesRepository {
   async create({ name, icon }) {
-    const category_id = await knex('category').insert({
+    const category_id = await knex('categories').insert({
       name,
       icon,
     });
@@ -11,17 +11,17 @@ class CategoriesRepository {
   }
 
   async index() {
-    const categories = await knex('category');
+    const categories = await knex('categories');
 
     return categories;
   }
 
   async delete(id) {
-    await knex('category').where({ id }).delete();
+    await knex('categories').where({ id }).delete();
   }
 
   async findByName(name) {
-    const category = await knex('category').where({ name }).first();
+    const category = await knex('categories').where({ name }).first();
 
     return category;
   }

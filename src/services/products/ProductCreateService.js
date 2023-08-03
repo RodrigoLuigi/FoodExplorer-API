@@ -1,4 +1,5 @@
 const AppError = require('../../utils/AppError');
+const { isValidPriceFormat } = require('../../utils/PriceUtils');
 
 class ProductCreateService {
   constructor(productsRepository, ingredientsRepository) {
@@ -11,6 +12,18 @@ class ProductCreateService {
       throw new AppError(
         'Você deixou um campo vazio. Preencha todos os campos necessários para cadastrar um novo produto!'
       );
+    }
+
+    if (!isValidPriceFormat(price)) {
+      throw new AppError(
+        'O campo price deve conter apenas valores numéricos no formato 10, 10,00 ou 1.000,00.'
+      );
+    }
+
+    const formattedPrice = price.replace(/\./g, '').replace(',', '.');
+
+    if (!formattedPrice.includes('.')) {
+      price += ',00';
     }
 
     const checkProductExists = await this.productsRepository.findByName(name);

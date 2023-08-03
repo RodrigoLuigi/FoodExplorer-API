@@ -3,6 +3,7 @@ const AppError = require('../utils/AppError');
 
 const PermissionRepository = require('../repositories/PermissionRepository');
 const PermissionCreateService = require('../services/permissions/PermissionCreateService');
+const PermissionIndexService = require('../services/permissions/PermissionIndexService');
 
 class PermissionsController {
   async create(request, response) {
@@ -19,6 +20,17 @@ class PermissionsController {
     });
 
     return response.status(201).json(createdPermission);
+  }
+
+  async index(request, response) {
+    const permissionRepository = new PermissionRepository();
+    const permissionIndexService = new PermissionIndexService(
+      permissionRepository
+    );
+
+    const permissions = await permissionIndexService.execute();
+
+    return response.status(200).json(permissions);
   }
 }
 

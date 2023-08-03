@@ -10,5 +10,6 @@ const permissionsController = new PermissionsController();
 const permissionRoutes = new Router();
 
 permissionRoutes.post('/', permissionsController.create);
+permissionRoutes.get('/', permissionsController.index);
 
 module.exports = permissionRoutes;
