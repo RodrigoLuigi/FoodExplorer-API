@@ -8,6 +8,7 @@ const ordersRoutes = require('./orders.routes');
 const sessionsRoutes = require('./sessions.routes');
 const permissionsRoutes = require('./permissions.routes');
 const rolesRoutes = require('./roles.routes');
+const favoritesRoutes = require('./favorites.routes');
 
 const routes = Router();
 
@@ -19,5 +20,6 @@ routes.use('/ingredients', ingredientsRoutes);
 routes.use('/orders', ordersRoutes);
 routes.use('/permissions', permissionsRoutes);
 routes.use('/roles', rolesRoutes);
+routes.use('/favorites', favoritesRoutes);
 
 module.exports = routes;
