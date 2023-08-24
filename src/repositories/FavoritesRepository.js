@@ -20,7 +20,8 @@ class FavoritesRepository {
   async findByUserId(user_id) {
     const favorites = await knex('favorites')
       .where({ user_id })
-      .join('products', 'favorites.product_id', '=', 'products.id');
+      .join('products', 'favorites.product_id', '=', 'products.id')
+      .orderBy('favorites.product_id');
 
     return favorites;
   }

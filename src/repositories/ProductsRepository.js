@@ -30,10 +30,26 @@ class ProductsRepository {
     return productsFound;
   }
 
-  async indexWithSearchByName(name) {
+  async indexWithSearchByName(name, user_id) {
     const products = await knex('products')
+      .select([
+        'products.id',
+        'products.name',
+        'products.description',
+        'products.price',
+        'products.category_id',
+        'products.imagePath',
+        'favorites.id as is_favorite',
+      ])
       .whereLike('name', `%${name}%`)
-      .orderBy('id');
+      .leftJoin('favorites', function () {
+        this.on('favorites.product_id', '=', 'products.id').andOn(
+          'favorites.user_id',
+          '=',
+          user_id
+        );
+      })
+      .orderBy('products.id');
 
     return products;
   }

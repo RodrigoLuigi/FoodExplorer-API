@@ -63,6 +63,7 @@ class ProductsController {
 
   async index(request, response) {
     const { name, ingredients } = request.query;
+    const user_id = request.user.id;
 
     const productsRepository = new ProductsRepository();
     const productIngredientsRepository = new ProductIngredientsRepository();
@@ -74,6 +75,7 @@ class ProductsController {
 
     const products = await productIndexWithSearchService.execute(
       name,
+      user_id,
       ingredients
     );
 

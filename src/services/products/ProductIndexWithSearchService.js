@@ -4,7 +4,7 @@ class ProductIndexWithSearchService {
     this.productIngredientsRepository = productIngredientsRepository;
   }
 
-  async execute(name, ingredients) {
+  async execute(name, user_id, ingredients) {
     let products;
 
     if (ingredients) {
@@ -17,7 +17,10 @@ class ProductIndexWithSearchService {
         filterIngredients
       );
     } else {
-      products = await this.productsRepository.indexWithSearchByName(name);
+      products = await this.productsRepository.indexWithSearchByName(
+        name,
+        user_id
+      );
     }
 
     const productIngredients = await this.productIngredientsRepository.index();
