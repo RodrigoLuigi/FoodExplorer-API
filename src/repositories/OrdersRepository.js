@@ -1,10 +1,11 @@
 const knex = require('../database/knex');
 
 class OrdersRepository {
-  async create(user_id, code) {
+  async create(user_id, code, description) {
     const order_id = await knex('orders').insert({
       code,
       user_id,
+      description,
     });
 
     return order_id;
