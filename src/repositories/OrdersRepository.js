@@ -12,7 +12,9 @@ class OrdersRepository {
   }
 
   async findByUserId(user_id) {
-    const orders = await knex('orders').where({ user_id });
+    const orders = await knex('orders')
+      .where({ user_id })
+      .orderBy('code', 'desc');
 
     return orders;
   }

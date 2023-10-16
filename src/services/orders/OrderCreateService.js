@@ -38,7 +38,7 @@ class OrderCreateService {
 
     const description = products
       .map((product) => {
-        return `${product.quantity}x ${product.name}`;
+        return `${product.quantity} x ${product.name}`;
       })
       .join(', ');
 
@@ -54,7 +54,7 @@ class OrderCreateService {
 
     const orders = await this.ordersRepository.findByUserId(user_id);
 
-    const code = String(orders.length + 1).padStart(4, '0');
+    const code = String(orders.length + 1).padStart(8, '0');
 
     const order_id = await this.ordersRepository.create(
       user_id,
