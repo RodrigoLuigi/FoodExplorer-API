@@ -62,8 +62,6 @@ class OrderCreateService {
       description
     );
 
-    console.log(description);
-
     return {
       id: Number(order_id),
       status: 'WAITING',

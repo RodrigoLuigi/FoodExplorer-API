@@ -2,7 +2,6 @@ const knex = require('../database/knex');
 
 class FavoritesRepository {
   async create(user_id, product_id) {
-    console.log(user_id, product_id);
     const favorite_id = await knex('favorites').insert({ user_id, product_id });
 
     return favorite_id;
