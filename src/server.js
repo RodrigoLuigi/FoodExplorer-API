@@ -35,10 +35,6 @@ app.use((error, request, response, next) => {
   });
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'build', 'index.html'));
-});
-
 const PORT = process.env.PORT || 3333;
 app.listen(PORT, () =>
   console.log(`Server is running on http://localhost:${PORT} 🚀`)
