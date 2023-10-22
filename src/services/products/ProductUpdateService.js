@@ -19,14 +19,18 @@ class ProductUpdateService {
       throw new AppError('Produto não encontrado.');
     }
 
-    if (name) {
-      const productWithUpdateName = await this.productsRepository.findByName(
-        name
+    if (!name || !description || !price || !category_id || !ingredients) {
+      throw new AppError(
+        'Você deixou um campo vazio. Preencha todos os campos necessários para atualizar o produto.'
       );
+    }
 
-      if (productWithUpdateName && productWithUpdateName.id !== product.id) {
-        throw new AppError('Já existe um produto com este nome.');
-      }
+    const productWithUpdateName = await this.productsRepository.findByName(
+      name
+    );
+
+    if (productWithUpdateName && productWithUpdateName.id !== product.id) {
+      throw new AppError('Já existe um produto com este nome.');
     }
 
     if (!isValidPriceFormat(price)) {
